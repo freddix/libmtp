@@ -1,7 +1,7 @@
 Summary:	Implementation of Microsoft's Media Transfer Protocol (MTP)
 Name:		libmtp
 Version:	1.1.6
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/libmtp/%{name}-%{version}.tar.gz
@@ -27,16 +27,28 @@ Requires:	%{name} = %{version}-%{release}
 %description devel
 This is the package containing the header files for mtp library.
 
-%package progs
-Summary:	Utilities from mtp library
+%package examples
+Summary:	Examples based on mtp library
 Group:		Applications/Multimedia
 Requires:	%{name} = %{version}-%{release}
 
-%description progs
-This is the package containing utilities from mtp library.
+%description examples
+Examples based on mtp library.
+
+%package udev
+Summary:	UDev rules and mtp-probe utility
+Group:		Applications/Multimedia
+Requires:	%{name} = %{version}-%{release}
+Requires:	udev
+Obsoletes:	libmtp-progs
+
+%description udev
+UDev MTP rules and mtp-probe utility.
 
 %prep
 %setup -q
+
+%{__sed} -i "s|AM_CONFIG_HEADER|AC_CONFIG_HEADERS|" configure.ac
 
 %build
 %{__libtoolize}
@@ -75,7 +87,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libmtp.h
 %{_pkgconfigdir}/libmtp.pc
 
-%files progs
+%files examples
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/mtp-albumart
 %attr(755,root,root) %{_bindir}/mtp-albums
@@ -100,5 +112,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/mtp-tracks
 %attr(755,root,root) %{_bindir}/mtp-trexist
 
-%attr(755,root,root) /usr/lib/udev/mtp-probe
-/usr/lib/udev/rules.d/69-libmtp.rules
+%files udev
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_prefix}/lib/udev/mtp-probe
+%{_prefix}/lib/udev/rules.d/69-libmtp.rules
+
