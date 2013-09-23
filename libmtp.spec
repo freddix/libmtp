@@ -1,7 +1,7 @@
 Summary:	Implementation of Microsoft's Media Transfer Protocol (MTP)
 Name:		libmtp
 Version:	1.1.6
-Release:	2
+Release:	3
 License:	GPL v2
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/libmtp/%{name}-%{version}.tar.gz
@@ -67,6 +67,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
+
+%{__sed} -i '1,3d' $RPM_BUILD_ROOT%{_prefix}/lib/udev/rules.d/69-libmtp.rules
 
 %clean
 rm -rf $RPM_BUILD_ROOT
