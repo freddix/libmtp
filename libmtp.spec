@@ -1,16 +1,16 @@
 Summary:	Implementation of Microsoft's Media Transfer Protocol (MTP)
 Name:		libmtp
-Version:	1.1.6
-Release:	4
+Version:	1.1.8
+Release:	1
 License:	GPL v2
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/libmtp/%{name}-%{version}.tar.gz
-# Source0-md5:	87835626dbcf39e62bfcdd4ae6da2063
+# Source0-md5:	f76abc22fdbe96e96f0066e0f2dc0efd
 URL:		http://libmtp.sourceforge.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libtool
-BuildRequires:	libusbx-devel
+BuildRequires:	libusb-devel
 BuildRequires:	pkg-config
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -23,6 +23,7 @@ operating systems.
 Summary:	Header files for mtp library
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	libusb-devel
 
 %description devel
 This is the package containing the header files for mtp library.
@@ -68,7 +69,10 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-%{__sed} -i '1,3d' $RPM_BUILD_ROOT%{_prefix}/lib/udev/rules.d/69-libmtp.rules
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
+
+# fix udev rule
+%{__sed} -i "/^Unable to open/d" $RPM_BUILD_ROOT%{_prefix}/lib/udev/rules.d/69-libmtp.rules
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -85,7 +89,6 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libmtp.so
-%{_libdir}/libmtp.la
 %{_includedir}/libmtp.h
 %{_pkgconfigdir}/libmtp.pc
 
